@@ -17,7 +17,7 @@
 
 ```powershell
 # 克隆仓库
-git clone https://github.com/<your-username>/win-dev-setup.git
+git clone https://github.com/liuxiao20051106-prog/win-dev-setup.git
 cd win-dev-setup
 
 # PowerShell 中运行
@@ -29,7 +29,7 @@ cd win-dev-setup
 ```powershell
 # 在 PowerShell（管理员）中粘贴执行
 Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned -Force
-iwr https://raw.gitmirror.com/<your-username>/win-dev-setup/main/setup.ps1 | iex
+iwr https://raw.gitmirror.com/liuxiao20051106-prog/win-dev-setup/main/setup.ps1 | iex
 ```
 
 > 💡 `raw.gitmirror.com` 是 GitHub 国内加速镜像，首次使用建议先克隆到本地。
