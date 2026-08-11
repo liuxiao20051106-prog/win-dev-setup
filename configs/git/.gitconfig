@@ -1,0 +1,74 @@
+# ============================================================
+# Git 全局配置模板
+# 安装来源: win-dev-setup
+# 用户信息请在安装时填写，或手动修改
+# ============================================================
+
+[user]
+    # name = 你的名字
+    # email = 你的邮箱
+
+[core]
+    # Windows 下保持 LF 换行
+    autocrlf = false
+    safecrlf = warn
+    # 使用 UTF-8 编码
+    editor = code --wait
+    quotepath = false
+    # 长路径支持
+    longpaths = true
+
+[gui]
+    encoding = utf-8
+
+[i18n]
+    commitencoding = utf-8
+    logoutputencoding = utf-8
+
+[push]
+    # 默认只推送当前分支
+    default = simple
+    # 推送前自动设置 upstream
+    autoSetupRemote = true
+
+[pull]
+    # 默认 rebase，避免多余 merge commit
+    rebase = true
+
+[fetch]
+    # 自动清理已删除的远程分支引用
+    prune = true
+
+[rebase]
+    autoStash = true
+
+[diff]
+    # 更好的函数名检测
+    algorithm = histogram
+    colorMoved = default
+
+[init]
+    defaultBranch = main
+
+[color]
+    ui = auto
+
+[alias]
+    # 实用别名
+    st = status
+    co = checkout
+    ci = commit
+    br = branch
+    df = diff
+    dfs = diff --staged
+    lg = log --graph --pretty=format:'%C(yellow)%h%Creset %C(green)%an%Creset %s %C(blue)%cr%Creset' -20
+    lga = log --graph --pretty=format:'%C(yellow)%h%Creset %C(green)%an%Creset %s %C(blue)%cr%Creset' --all -20
+    unstage = reset HEAD --
+    last = log -1 HEAD --stat
+    who = shortlog -sne
+    # 查看暂存区的改动
+    staged = diff --staged
+    # 回滚上一次 commit（保留改动）
+    undo = reset --soft HEAD^
+    # 修改上一次 commit
+    amend = commit --amend --no-edit

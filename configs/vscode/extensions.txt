@@ -1,0 +1,35 @@
+# VSCode 推荐扩展 — 一行一个扩展 ID
+# 安装时会跳过已安装的扩展
+
+# 主题与图标
+zhuangtongfa.material-theme
+PKief.material-icon-theme
+
+# Git
+eamodio.gitlens
+
+# 代码格式化
+esbenp.prettier-vscode
+EditorConfig.EditorConfig
+
+# 语言支持
+bradlc.vscode-tailwindcss
+ms-python.python
+ms-python.black-formatter
+ms-python.isort
+golang.go
+redhat.vscode-yaml
+dotenv.dotenv-vscode
+
+# 生产力
+usernamehw.errorlens
+formulahendry.auto-rename-tag
+streetsidesoftware.code-spell-checker
+yzhang.markdown-all-in-one
+
+# Docker
+ms-azuretools.vscode-docker
+
+# 远程开发
+ms-vscode-remote.remote-wsl
+ms-vscode-remote.remote-ssh

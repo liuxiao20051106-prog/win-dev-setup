@@ -1,0 +1,56 @@
+# ============================================================
+# Starship 提示符配置 — 简洁实用风格
+# 安装来源: win-dev-setup
+# ============================================================
+
+# 紧凑模式（模块之间紧凑排列）
+add_newline = false
+command_timeout = 1000
+
+# 格式：目录 + Git 分支 + Node/Python 版本 + 一行提示符
+format = """
+$directory\
+$git_branch\
+$git_status\
+$nodejs\
+$python\
+$line_break\
+$character"""
+
+[directory]
+truncation_length = 3
+truncate_to_repo = true
+style = "cyan bold"
+
+[git_branch]
+symbol = " "
+style = "purple"
+format = " on [$symbol$branch]($style)"
+
+[git_status]
+style = "yellow"
+format = '([\[$all_status$ahead_behind\]]($style))'
+conflicted = "✖ "
+ahead = "⇡${count}"
+behind = "⇣${count}"
+diverged = "⇡⇣${count}"
+untracked = "?${count}"
+stashed = "≡"
+modified = "!${count}"
+staged = "+${count}"
+renamed = "»${count}"
+deleted = "✘${count}"
+
+[nodejs]
+symbol = "⬢ "
+style = "green"
+format = " via [$symbol$version]($style)"
+
+[python]
+symbol = "🐍 "
+style = "yellow"
+format = " via [$symbol$version]($style)"
+
+[character]
+success_symbol = "[➜](green bold)"
+error_symbol = "[➜](red bold)"

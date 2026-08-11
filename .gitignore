@@ -1,0 +1,26 @@
+# Windows / Git Bash
+*.exe
+*.dll
+*.so
+*.dylib
+
+# 系统文件
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# 编辑器
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# 备份文件（用户环境生成）
+*.bak.*
+
+# 临时文件
+*.tmp
+*.temp
+*.log
