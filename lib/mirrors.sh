@@ -53,10 +53,15 @@ setup_go_mirror() {
 # Git 代理（GitHub 加速）
 # ============================================================
 setup_git_proxy() {
-    # 仅加速 github.com，不影响其他仓库
-    if confirm "是否配置 GitHub SSH 加速（通过镜像）？"; then
-        git config --global url."git@git.zhlh6.cn:".insteadOf "https://github.com/"
-        log_ok "GitHub 镜像加速已配置"
+    # GitHub 国内加速（通过 HTTPS 镜像）
+    # ⚠️ 注意：使用第三方镜像存在安全风险，仅供网络受限时使用
+    log_warn "GitHub 镜像加速会将所有 GitHub HTTPS 请求转发到第三方服务器"
+    log_warn "存在中间人攻击和供应链安全风险，仅建议网络受限时使用"
+    if confirm "是否配置 GitHub HTTPS 镜像加速？（不推荐在生产环境使用）"; then
+        # 使用 HTTPS 镜像而非 SSH，降低配置门槛
+        git config --global url."https://git.zhlh6.cn/".insteadOf "https://github.com/"
+        log_ok "GitHub HTTPS 镜像加速已配置"
+        log_info "如需撤销，运行: git config --global --unset url.https://git.zhlh6.cn/.insteadOf"
     else
         log_info "跳过 GitHub 加速"
     fi
@@ -68,6 +73,8 @@ setup_git_proxy() {
 setup_cargo_mirror() {
     if command_exists cargo; then
         mkdir -p ~/.cargo
+        # 先备份已有配置
+        backup_file "$HOME/.cargo/config.toml"
         cat > ~/.cargo/config.toml <<'EOF'
 [source.crates-io]
 replace-with = 'ustc'

@@ -21,7 +21,11 @@ setup_git() {
         log_warn "Git 安装后请重启终端以生效"
     fi
 
-    # 2. 配置用户信息
+    # 2. 写入配置模板（先写模板，再写用户信息，避免被覆盖）
+    log_info "写入 Git 配置..."
+    safe_write "$ROOT_DIR/configs/git/.gitconfig" "$HOME/.gitconfig"
+
+    # 3. 配置用户信息（在模板之后写入，确保不被覆盖）
     echo ""
     log_info "配置 Git 用户信息"
 
@@ -44,10 +48,6 @@ setup_git() {
     if [ -z "$current_email" ]; then
         git config --global user.email "$(required_input '请输入你的邮箱')"
     fi
-
-    # 3. 写入配置文件
-    log_info "写入 Git 配置..."
-    safe_write "$ROOT_DIR/configs/git/.gitconfig" "$HOME/.gitconfig"
 
     log_ok "Git 配置完成"
     return 0

@@ -115,8 +115,8 @@ main() {
                         fi
                     fi
                 done
-                # 排序
-                selected=($(printf '%s\n' "${selected[@]}" | sort -n))
+                # 排序（mapfile 安全处理，避免 word splitting）
+                mapfile -t selected < <(printf '%s\n' "${selected[@]}" | sort -n)
                 ;;
         esac
     done
@@ -126,7 +126,8 @@ main() {
     # ============================================================
     print_banner
     printf "${BOLD}即将安装以下模块：${NC}\n\n"
-    local sorted=($(printf '%s\n' "${selected[@]}" | sort -n))
+    local sorted=()
+    mapfile -t sorted < <(printf '%s\n' "${selected[@]}" | sort -n)
     for id in "${sorted[@]}"; do
         for mod in "${MODULES[@]}"; do
             IFS='|' read -r mid name desc script default <<< "$mod"

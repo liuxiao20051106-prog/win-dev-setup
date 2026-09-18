@@ -32,7 +32,7 @@ setup_node() {
     log_info "安装常用 npm 全局包..."
     local pkgs=(pnpm yarn typescript tsx nodemon http-server)
     for pkg in "${pkgs[@]}"; do
-        if npm list -g --depth=0 2>/dev/null | grep -q "$pkg"; then
+        if npm list -g --depth=0 2>/dev/null | grep -qw "$pkg"; then
             log_info "  $pkg 已安装，跳过"
         else
             npm install -g "$pkg" && log_ok "  $pkg 安装完成" || log_warn "  $pkg 安装失败"

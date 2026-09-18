@@ -26,14 +26,28 @@ setup_terminal() {
         log_info "正在安装 Starship..."
         if is_installed winget; then
             winget_install Starship.Starship "Starship" || {
-                # 备选：curl 安装
+                # 备选：curl 安装（先下载再执行，避免管道执行风险）
                 log_info "尝试 curl 安装 Starship..."
-                curl -sS https://starship.rs/install.sh | sh -s -- -y 2>/dev/null && \
-                    log_ok "Starship 安装完成" || log_warn "Starship 安装失败"
+                local install_script
+                install_script=$(mktemp)
+                if curl -sS https://starship.rs/install.sh -o "$install_script" 2>/dev/null; then
+                    bash "$install_script" -y 2>/dev/null && \
+                        log_ok "Starship 安装完成" || log_warn "Starship 安装失败"
+                else
+                    log_warn "Starship 安装脚本下载失败"
+                fi
+                rm -f "$install_script"
             }
         else
-            curl -sS https://starship.rs/install.sh | sh -s -- -y 2>/dev/null && \
-                log_ok "Starship 安装完成" || log_warn "Starship 安装失败"
+            local install_script
+            install_script=$(mktemp)
+            if curl -sS https://starship.rs/install.sh -o "$install_script" 2>/dev/null; then
+                bash "$install_script" -y 2>/dev/null && \
+                    log_ok "Starship 安装完成" || log_warn "Starship 安装失败"
+            else
+                log_warn "Starship 安装脚本下载失败"
+            fi
+            rm -f "$install_script"
         fi
     fi
 

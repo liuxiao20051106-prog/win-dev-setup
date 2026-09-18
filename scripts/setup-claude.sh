@@ -7,7 +7,7 @@ ROOT_DIR="$(dirname "$SCRIPT_DIR")"
 source "$ROOT_DIR/lib/utils.sh"
 source "$ROOT_DIR/lib/mirrors.sh"
 
-CLAUDE_SKILLS_REPO="https://github.com/grapeyolo/claude-skills.git"
+CLAUDE_SKILLS_REPO_DEFAULT="https://github.com/grapeyolo/claude-skills.git"
 
 setup_claude() {
     log_step "Claude Code 安装与配置"
@@ -35,6 +35,8 @@ setup_claude() {
     fi
 
     # 3. 克隆 Claude Skills 仓库
+    local claude_skills_repo
+    claude_skills_repo=$(input_with_default "Claude Skills 仓库地址" "$CLAUDE_SKILLS_REPO_DEFAULT")
     local skills_dir="$HOME/claude-skills"
     if [ -d "$skills_dir/.git" ]; then
         log_info "Claude Skills 仓库已存在于 $skills_dir"
@@ -43,27 +45,29 @@ setup_claude() {
         fi
     else
         log_info "正在克隆 Claude Skills 仓库..."
-        if git clone "$CLAUDE_SKILLS_REPO" "$skills_dir" 2>/dev/null; then
+        if git clone "$claude_skills_repo" "$skills_dir" 2>/dev/null; then
             log_ok "Skills 仓库已克隆到 $skills_dir"
         else
             log_warn "克隆失败，请手动克隆："
-            log_info "  git clone $CLAUDE_SKILLS_REPO ~/claude-skills"
+            log_info "  git clone $claude_skills_repo ~/claude-skills"
         fi
     fi
 
     # 4. Claude Code 中文配置
     log_info "配置 Claude Code 中文优化..."
     mkdir -p "$HOME/.claude"
+    if [ -f "$HOME/.claude/settings.json" ]; then
+        backup_file "$HOME/.claude/settings.json"
+    fi
     if [ ! -f "$HOME/.claude/settings.json" ]; then
         cat > "$HOME/.claude/settings.json" <<'EOF'
 {
-    "model": "claude-sonnet-5",
     "outputStyle": "zh-cn"
 }
 EOF
         log_ok "Claude Code 中文配置完成"
     else
-        log_info "~/.claude/settings.json 已存在，跳过"
+        log_info "~/.claude/settings.json 已存在，已备份并跳过"
     fi
 
     log_ok "Claude Code 配置完成"

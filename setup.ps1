@@ -4,8 +4,9 @@
 # 用法（在 PowerShell 中运行）:
 #   Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
 #   .\setup.ps1
-# 或者一键远程运行:
-#   powershell -NoProfile -ExecutionPolicy Bypass -Command "iwr https://raw.gitmirror.com/<user>/win-dev-setup/main/setup.ps1 | iex"
+# 或者一键远程运行（请先克隆到本地再运行，远程执行存在安全风险）:
+#   git clone https://github.com/liuxiao20051106-prog/win-dev-setup.git
+#   cd win-dev-setup && .\setup.ps1
 # ============================================================
 
 $ErrorActionPreference = "Stop"
@@ -97,7 +98,12 @@ Write-Host ""
 
 # --- 启动 Bash 安装器 ---
 $env:MSYS2_PATH_TYPE = "inherit"
-& $bashPath -c "cd '$scriptDir' && bash setup.sh"
+Push-Location $scriptDir
+try {
+    & $bashPath -c "bash setup.sh"
+} finally {
+    Pop-Location
+}
 
 Write-Host ""
 Write-Host "========================================" -ForegroundColor Cyan

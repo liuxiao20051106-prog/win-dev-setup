@@ -29,8 +29,6 @@ command_exists() { command -v "$1" &>/dev/null; }
 
 is_windows() {
     uname -s 2>/dev/null | grep -qi "mingw\|msys\|cygwin" && return 0
-    [[ "$(uname -s 2>/dev/null)" == "MINGW"* ]] && return 0
-    [[ "$(uname -s 2>/dev/null)" == "MSYS"* ]] && return 0
     return 1
 }
 
@@ -51,6 +49,7 @@ unix_to_win() {
     if command_exists cygpath; then
         cygpath -w "$path"
     else
+        log_warn "cygpath 不可用，路径转换可能不准确（建议安装 Git Bash 自带 cygpath）"
         echo "$path" | sed 's|^/\([a-zA-Z]\)/|\1:/|; s|/|\\|g'
     fi
 }
@@ -97,10 +96,11 @@ safe_link() {
     if is_windows; then
         # Git Bash 下 ln -s 不可靠，直接复制
         cp "$src" "$dest"
+        log_ok "已复制: $dest → $src"
     else
         ln -sf "$src" "$dest"
+        log_ok "已链接: $dest → $src"
     fi
-    log_ok "已链接: $dest → $src"
 }
 
 # ============================================================
@@ -146,11 +146,18 @@ winget_install() {
     local pkg_name="${2:-$pkg_id}"
     if command_exists winget; then
         log_info "winget 安装 $pkg_name ..."
-        winget install --id "$pkg_id" --silent --accept-package-agreements --accept-source-agreements 2>/dev/null && {
+        local tmp_log
+        tmp_log=$(mktemp)
+        winget install --id "$pkg_id" --silent --accept-package-agreements --accept-source-agreements 2>"$tmp_log" && {
             log_ok "$pkg_name 安装完成"
+            rm -f "$tmp_log"
             return 0
         } || {
             log_warn "$pkg_name winget 安装失败，请手动安装"
+            if [ -s "$tmp_log" ]; then
+                log_info "错误详情: $(cat "$tmp_log" | head -3)"
+            fi
+            rm -f "$tmp_log"
             return 1
         }
     else

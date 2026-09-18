@@ -46,7 +46,7 @@ setup_utils() {
     for tool in "${TOOLS[@]}"; do
         IFS='|' read -r id name cat <<< "$tool"
         local status=""
-        if is_installed "${name,,}" "$id" 2>/dev/null; then
+        if is_installed "$(echo "$name" | tr '[:upper:]' '[:lower:]')" "$id" 2>/dev/null; then
             status="${GREEN}已安装${NC}"
         fi
         printf "  %2d. %-25s %-15s %s\n" "$i" "$name" "[$cat]" "$status"
@@ -66,7 +66,12 @@ setup_utils() {
     local selected=()
     for part in $selection; do
         if [[ "$part" =~ ^([0-9]+)-([0-9]+)$ ]]; then
-            for s in $(seq "${BASH_REMATCH[1]}" "${BASH_REMATCH[2]}"); do
+            local start="${BASH_REMATCH[1]}"
+            local end="${BASH_REMATCH[2]}"
+            # 边界校验，防止超大范围
+            [ "$start" -lt 1 ] && start=1
+            [ "$end" -gt "${#TOOLS[@]}" ] && end="${#TOOLS[@]}"
+            for s in $(seq "$start" "$end"); do
                 selected+=("$s")
             done
         elif [[ "$part" =~ ^[0-9]+$ ]]; then
@@ -76,7 +81,7 @@ setup_utils() {
 
     # 安装
     for idx in "${selected[@]}"; do
-        [ "$idx" -lt 1 ] && continue
+        [ "$idx" -le 0 ] && continue
         [ "$idx" -gt "${#TOOLS[@]}" ] && continue
         local tool="${TOOLS[$((idx-1))]}"
         IFS='|' read -r id name cat <<< "$tool"
